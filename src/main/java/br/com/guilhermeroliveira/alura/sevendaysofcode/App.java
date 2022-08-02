@@ -1,8 +1,10 @@
 package br.com.guilhermeroliveira.alura.sevendaysofcode;
 
 import br.com.guilhermeroliveira.alura.sevendaysofcode.dto.IMDbTop250MoviesResponseDto;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.model.Movie;
 import br.com.guilhermeroliveira.alura.sevendaysofcode.service.IMDbHttpService;
 import br.com.guilhermeroliveira.alura.sevendaysofcode.util.JSONParser;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.util.Mapper;
 
 import java.util.List;
 import java.util.Map;
@@ -13,15 +15,16 @@ public class App {
     public static void main(String[] args) {
         String json = IMDbHttpService.getTop250Movies();
 
-        // List<Map<String, String>> movies = manualParsing(json);
+        List<Map<String, String>> rawMovies = manualParsing(json);
+        List<Movie> movies = Mapper.parseArray(rawMovies, Movie.class);
 
-        // movies.stream().map(movie -> movie.get("title")).forEach(System.out::println);
-        // movies.stream().map(movie -> movie.get("image")).forEach(System.out::println);
+        movies.stream().map(movie -> movie.getTitle()).forEach(System.out::println);
+        movies.stream().map(movie -> movie.getImage()).forEach(System.out::println);
 
-        IMDbTop250MoviesResponseDto response = gsonParsing(json);
+        // IMDbTop250MoviesResponseDto response = gsonParsing(json);
 
-        response.getItems().stream().map(movie -> movie.getTitle()).forEach(System.out::println);
-        response.getItems().stream().map(movie -> movie.getImage()).forEach(System.out::println);
+        // response.getItems().stream().map(movie -> movie.getTitle()).forEach(System.out::println);
+        // response.getItems().stream().map(movie -> movie.getImage()).forEach(System.out::println);
     }
 
     private static List<Map<String, String>> manualParsing(String json) {

@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class Mapper {
 
@@ -23,15 +24,15 @@ public class Mapper {
 		try {
 			T parsedObject = clazz.getConstructor().newInstance();
 			for (Field f : clazz.getDeclaredFields()) {
-				if (f.getType().isPrimitive() && object.get(f.getName()) == null)
+				final String fieldName = f.getName();
+
+				if (f.getType().isPrimitive() && object.get(fieldName) == null)
 					continue;
 
-				final String fieldName = f.getName();
-				Method setter = clazz
-						.getDeclaredMethod("set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1),
-								f.getType());
-
-				setter.invoke(parsedObject, object.get(f.getName()));
+				Method setter = Stream.of(clazz.getDeclaredMethods())
+						.filter(m -> m.getName().equalsIgnoreCase("set" + fieldName)).findFirst().orElse(null);
+				if (setter != null)
+					setter.invoke(parsedObject, object.get(fieldName));
 			}
 
 			return parsedObject;

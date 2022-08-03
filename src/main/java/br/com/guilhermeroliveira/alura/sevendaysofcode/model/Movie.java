@@ -8,8 +8,8 @@ public class Movie {
 	private String year;
 	private String image;
 	private String crew;
-	private String imdbRating;
-	private String imdbRatingCount;
+	private String imDbRating;
+	private String imDbRatingCount;
 
 	public String getId() {
 		return id;
@@ -68,18 +68,18 @@ public class Movie {
 	}
 
 	public String getImdbRating() {
-		return imdbRating;
+		return imDbRating;
 	}
 
-	public void setImdbRating(String imdbRating) {
-		this.imdbRating = imdbRating;
+	public void setImdbRating(String imDbRating) {
+		this.imDbRating = imDbRating;
 	}
 
 	public String getImdbRatingCount() {
-		return imdbRatingCount;
+		return imDbRatingCount;
 	}
 
-	public void setImdbRatingCount(String imdbRatingCount) {
-		this.imdbRatingCount = imdbRatingCount;
+	public void setImdbRatingCount(String imDbRatingCount) {
+		this.imDbRatingCount = imDbRatingCount;
 	}
 }

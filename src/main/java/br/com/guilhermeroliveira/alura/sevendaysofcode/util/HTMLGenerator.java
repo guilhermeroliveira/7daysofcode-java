@@ -3,6 +3,7 @@ package br.com.guilhermeroliveira.alura.sevendaysofcode.util;
 import br.com.guilhermeroliveira.alura.sevendaysofcode.model.Movie;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 
 public class HTMLGenerator {
@@ -26,12 +27,16 @@ public class HTMLGenerator {
 			</div>
 			""";
 
-	public static void writeMovies(List<Movie> movies, PrintWriter writer) {
-		initializeHTML(writer);
+	public static String writeMovies(List<Movie> movies) {
+		var sw = new StringWriter();
+		var pw = new PrintWriter(sw);
+		initializeHTML(pw);
 
-		movies.stream().forEach(movie -> writeMovieDiv(movie, writer));
+		movies.stream().forEach(movie -> writeMovieDiv(movie, pw));
 
-		closeHTML(writer);
+		closeHTML(pw);
+
+		return sw.toString();
 	}
 
 	private static void writeMovieDiv(Movie movie, PrintWriter writer) {

@@ -6,8 +6,6 @@ import br.com.guilhermeroliveira.alura.sevendaysofcode.util.HTMLGenerator;
 import br.com.guilhermeroliveira.alura.sevendaysofcode.util.JSONParser;
 import br.com.guilhermeroliveira.alura.sevendaysofcode.util.Mapper;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -23,15 +21,14 @@ public class App {
             String json = IMDbHttpService.getTop250Movies();
             List<Movie> movies = manualParsing(json);
 
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            String response = HTMLGenerator.writeMovies(movies);
 
-            PrintWriter writer = new PrintWriter(os);
-            HTMLGenerator.writeMovies(movies, writer);
-            writer.close();
-
-            String response = new String(os.toByteArray());
             res.send(response);
-        }).listen(8080);
+        }).listen(() -> {
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+            System.out.println("Listening at localhost:8080");
+        }, 8080);
     }
 
     private static List<Movie> manualParsing(String json) {

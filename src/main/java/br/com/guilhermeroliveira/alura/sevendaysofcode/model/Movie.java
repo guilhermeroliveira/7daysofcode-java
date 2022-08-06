@@ -1,6 +1,6 @@
 package br.com.guilhermeroliveira.alura.sevendaysofcode.model;
 
-public class Movie {
+public class Movie implements Content {
 	private String id;
 	private String rank;
 	private String title;
@@ -81,5 +81,15 @@ public class Movie {
 
 	public void setImdbRatingCount(String imDbRatingCount) {
 		this.imDbRatingCount = imDbRatingCount;
+	}
+
+	@Override
+	public String getImageUrl() {
+		return this.image;
+	}
+
+	@Override
+	public String getRating() {
+		return this.imDbRating;
 	}
 }

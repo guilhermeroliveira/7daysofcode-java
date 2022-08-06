@@ -1,4 +1,4 @@
-package br.com.guilhermeroliveira.alura.sevendaysofcode.service;
+package br.com.guilhermeroliveira.alura.sevendaysofcode.service.http;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -1,4 +1,6 @@
-package br.com.guilhermeroliveira.alura.sevendaysofcode.util;
+package br.com.guilhermeroliveira.alura.sevendaysofcode.util.mappers;
+
+import br.com.guilhermeroliveira.alura.sevendaysofcode.model.Movie;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -7,12 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class Mapper {
+public class MovieMapper implements ContentMapper {
 
-	public static <T> List<T> parseArray(List<Map<String, String>> list, Class<T> clazz) {
-		List<T> parsedList = new ArrayList<>();
+	@Override
+	public List<Movie> parseArray(List<Map<String, String>> list) {
+		List<Movie> parsedList = new ArrayList<>();
 		for (var object : list) {
-			T parsedObject = parseObject(object, clazz);
+			Movie parsedObject = parseObject(object);
 			if (parsedObject != null)
 				parsedList.add(parsedObject);
 		}
@@ -20,17 +23,19 @@ public class Mapper {
 		return parsedList;
 	}
 
-	public static <T> T parseObject(Map<String, String> object, Class<T> clazz) {
+	@Override
+	public Movie parseObject(Map<String, String> object) {
 		try {
-			T parsedObject = clazz.getConstructor().newInstance();
-			for (Field f : clazz.getDeclaredFields()) {
+			Movie parsedObject = new Movie();
+			for (Field f : Movie.class.getDeclaredFields()) {
 				final String fieldName = f.getName();
 
 				if (f.getType().isPrimitive() && object.get(fieldName) == null)
 					continue;
 
-				Method setter = Stream.of(clazz.getDeclaredMethods())
+				Method setter = Stream.of(Movie.class.getDeclaredMethods())
 						.filter(m -> m.getName().equalsIgnoreCase("set" + fieldName)).findFirst().orElse(null);
+
 				if (setter != null)
 					setter.invoke(parsedObject, object.get(fieldName));
 			}

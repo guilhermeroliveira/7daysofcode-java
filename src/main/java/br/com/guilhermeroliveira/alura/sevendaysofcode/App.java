@@ -1,16 +1,18 @@
 package br.com.guilhermeroliveira.alura.sevendaysofcode;
 
-import br.com.guilhermeroliveira.alura.sevendaysofcode.model.Movie;
-import br.com.guilhermeroliveira.alura.sevendaysofcode.service.IMDbHttpService;
-import br.com.guilhermeroliveira.alura.sevendaysofcode.util.HTMLGenerator;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.model.Content;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.model.ContentSource;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.service.http.IMDbHttpService;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.util.ContentHTMLGenerator;
 import br.com.guilhermeroliveira.alura.sevendaysofcode.util.JSONParser;
-import br.com.guilhermeroliveira.alura.sevendaysofcode.util.Mapper;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import express.Express;
 import express.utils.MediaType;
+import express.utils.Status;
 
 public class App {
     public static void main(String[] args) {
@@ -18,10 +20,20 @@ public class App {
         server.get("/", (req, res) -> {
             res.setContentType(MediaType._html);
 
-            String json = IMDbHttpService.getTop250Movies();
-            List<Movie> movies = manualParsing(json);
+            ContentSource contentSource = null;
+            try {
+                contentSource = ContentSource.valueOf(req.getQuery("type"));
 
-            String response = HTMLGenerator.writeMovies(movies);
+            } catch (IllegalArgumentException | NullPointerException e) {
+                e.printStackTrace();
+                res.sendStatus(Status._400);
+                return;
+            }
+
+            String json = IMDbHttpService.getTop250Movies();
+            List<Content> movies = manualParsing(json, contentSource);
+
+            String response = ContentHTMLGenerator.writeContents(movies);
 
             res.send(response);
         }).listen(() -> {
@@ -31,11 +43,11 @@ public class App {
         }, 8080);
     }
 
-    private static List<Movie> manualParsing(String json) {
+    private static List<Content> manualParsing(String json, ContentSource source) {
         String array = json.substring(json.indexOf("["), json.lastIndexOf("]") + 1);
 
-        List<Map<String, String>> rawMovies = JSONParser.parseArray(array);
-        return Mapper.parseArray(rawMovies, Movie.class);
+        List<Map<String, String>> rawContents = JSONParser.parseArray(array);
+        return source.getMapper().parseArray(rawContents).stream().map(c -> (Content) c).collect(Collectors.toList());
     }
 
     // private static IMDbTop250MoviesResponseDto gsonParsing(String json) {

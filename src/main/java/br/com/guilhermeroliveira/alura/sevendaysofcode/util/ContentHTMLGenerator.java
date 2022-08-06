@@ -1,12 +1,12 @@
 package br.com.guilhermeroliveira.alura.sevendaysofcode.util;
 
-import br.com.guilhermeroliveira.alura.sevendaysofcode.model.Movie;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.model.Content;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 
-public class HTMLGenerator {
+public class ContentHTMLGenerator {
 
 	private static final String HEAD_WITH_BOOTSTRAP = """
 			<head>
@@ -27,21 +27,21 @@ public class HTMLGenerator {
 			</div>
 			""";
 
-	public static String writeMovies(List<Movie> movies) {
+	public static String writeContents(List<Content> contents) {
 		var sw = new StringWriter();
 		var pw = new PrintWriter(sw);
 		initializeHTML(pw);
 
-		movies.stream().forEach(movie -> writeMovieDiv(movie, pw));
+		contents.stream().forEach(content -> writeContentDiv(content, pw));
 
 		closeHTML(pw);
 
 		return sw.toString();
 	}
 
-	private static void writeMovieDiv(Movie movie, PrintWriter writer) {
-		writer.println(String.format(DIV_TEMPLATE, movie.getTitle(), movie.getImage(), movie.getTitle(),
-				movie.getImdbRating(), movie.getYear()));
+	private static void writeContentDiv(Content content, PrintWriter writer) {
+		writer.println(String.format(DIV_TEMPLATE, content.getTitle(), content.getImageUrl(), content.getTitle(),
+				content.getRating(), content.getYear()));
 	}
 
 	private static void initializeHTML(PrintWriter writer) {

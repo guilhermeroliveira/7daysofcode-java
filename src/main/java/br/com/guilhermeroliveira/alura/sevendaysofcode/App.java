@@ -1,11 +1,14 @@
 package br.com.guilhermeroliveira.alura.sevendaysofcode;
 
-import br.com.guilhermeroliveira.alura.sevendaysofcode.model.Content;
-import br.com.guilhermeroliveira.alura.sevendaysofcode.model.ContentSource;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.constants.SortDirection;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.model.content.Content;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.model.content.ContentSorter;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.model.content.ContentSource;
 import br.com.guilhermeroliveira.alura.sevendaysofcode.service.http.IMDbHttpService;
 import br.com.guilhermeroliveira.alura.sevendaysofcode.util.ContentHTMLGenerator;
 import br.com.guilhermeroliveira.alura.sevendaysofcode.util.JSONParser;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,9 +24,13 @@ public class App {
             res.setContentType(MediaType._html);
 
             ContentSource contentSource = null;
+            ContentSorter contentSorter = null;
+            SortDirection sortDirection = null;
+
             try {
                 contentSource = ContentSource.valueOf(req.getQuery("type"));
-
+                contentSorter = ContentSorter.valueOf(req.getQuery("sortBy"));
+                sortDirection = SortDirection.valueOf(req.getQuery("direction"));
             } catch (IllegalArgumentException | NullPointerException e) {
                 e.printStackTrace();
                 res.sendStatus(Status._400);
@@ -32,6 +39,12 @@ public class App {
 
             String json = IMDbHttpService.getTop250Movies();
             List<Content> movies = manualParsing(json, contentSource);
+
+            Comparator<Content> comparator = contentSorter.getComparator();
+            if (sortDirection == SortDirection.DESC)
+                comparator = comparator.reversed();
+
+            movies.sort(comparator);
 
             String response = ContentHTMLGenerator.writeContents(movies);
 

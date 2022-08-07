@@ -1,6 +1,8 @@
 package br.com.guilhermeroliveira.alura.sevendaysofcode.model;
 
-public class Movie implements Content {
+import br.com.guilhermeroliveira.alura.sevendaysofcode.model.content.Content;
+
+public class Movie implements Content, Comparable<Content> {
 	private String id;
 	private String rank;
 	private String title;
@@ -91,5 +93,10 @@ public class Movie implements Content {
 	@Override
 	public String getRating() {
 		return this.imDbRating;
+	}
+
+	@Override
+	public int compareTo(Content otherContent) {
+		return this.getRating().compareTo(otherContent.getRating());
 	}
 }

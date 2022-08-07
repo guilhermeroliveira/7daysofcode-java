@@ -1,4 +1,4 @@
-package br.com.guilhermeroliveira.alura.sevendaysofcode.model;
+package br.com.guilhermeroliveira.alura.sevendaysofcode.model.content;
 
 public interface Content {
 	String getTitle();

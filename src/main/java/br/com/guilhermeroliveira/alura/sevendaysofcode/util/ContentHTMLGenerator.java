@@ -1,6 +1,6 @@
 package br.com.guilhermeroliveira.alura.sevendaysofcode.util;
 
-import br.com.guilhermeroliveira.alura.sevendaysofcode.model.Content;
+import br.com.guilhermeroliveira.alura.sevendaysofcode.model.content.Content;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
